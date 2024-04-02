@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CollectionManager.Pages.CollectionFormPage"
+             Title="CollectionFormPage">
+    <StackLayout Orientation="Vertical" VerticalOptions="Start">
+        <Label Text="Enter name:"/>
+        <Entry Placeholder="Enter name" x:Name="gradeName" Text="{Binding Path=NameToEdit, Mode=OneWay}"/>
+        <StackLayout Orientation="Horizontal">
+            <Button Text="Add column" Command="{Binding AddColumnCommand}"/>
+            <Button Text="Edit column" Command="{Binding EditColumnCommand}"/>
+            <Button Text="Delete column" Command="{Binding DeleteColumnCommand}"/>
+        </StackLayout>
+        <ListView ItemsSource="{Binding Columns}" ItemSelected="OnItemSelectedChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Border Stroke="#333" StrokeThickness="1">
+                            <Label Text="{Binding .}" Padding="5"/>
+                        </Border>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Text="OK" Command="{Binding ApproveFormCommand}" CommandParameter="{Binding Source={x:Reference gradeName}, Path=Text}"/>
+    </StackLayout>
+</ContentPage>

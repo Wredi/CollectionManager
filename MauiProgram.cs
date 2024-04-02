@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CollectionManager.Data;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace CollectionManager
 {
@@ -18,6 +20,9 @@ namespace CollectionManager
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
+            string dbPath = FileSystem.AppDataDirectory;
+            builder.Services.AddSingleton(s => ActivatorUtilities.CreateInstance<CollectionRepository>(s, dbPath));
+            Trace.WriteLine(dbPath);
 
             return builder.Build();
         }
