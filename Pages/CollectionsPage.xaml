@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CollectionManager.ViewModels"
              x:Class="CollectionManager.Pages.CollectionsPage"
-             Title="Select Grade">
+             Title="Select Collection">
     <ContentPage.BindingContext>
         <viewModels:CollectionsViewModel/>
     </ContentPage.BindingContext>
@@ -12,7 +12,8 @@
         <StackLayout Orientation="Horizontal">
             <Button Text="Add collection" Command="{Binding AddCollectionCommand}"/>
             <Button Text="Edit collection" Command="{Binding EditSelectedCollectionCommand}"/>
-            <Button Text="Delete collection" Command="{Binding DeleteSelectedGradeCommand}"/>
+            <Button Text="Delete collection" Command="{Binding DeleteSelectedCollectionCommand}"/>
+            <Button Text="Approve collection" Command="{Binding ApproveSelectedCollectionCommand}"/>
         </StackLayout>
         <ListView ItemsSource="{Binding Collections}" ItemSelected="OnItemSelectedChanged">
             <ListView.ItemTemplate>

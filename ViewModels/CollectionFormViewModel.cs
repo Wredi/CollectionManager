@@ -1,12 +1,5 @@
-﻿using CollectionManager.Models;
-using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace CollectionManager.ViewModels
 {
@@ -19,13 +12,13 @@ namespace CollectionManager.ViewModels
         public CollectionFormViewModel()
         {
             NameToEdit = string.Empty;
-            Columns = new ObservableCollection<string>(App.CollectionRepo.GetDefaultColumnNames());
+            Columns = new ObservableCollection<string>(Models.Collection.GetDefaultAdditionalColumnsNames());
         }
 
         public CollectionFormViewModel(Models.Collection collection)
         {
             NameToEdit = collection.Name;
-            Columns = new ObservableCollection<string>(collection.Columns);
+            Columns = new ObservableCollection<string>(collection.AdditionalColumns);
         }
 
         [RelayCommand]
@@ -51,6 +44,8 @@ namespace CollectionManager.ViewModels
             string result = await Shell.Current.DisplayPromptAsync("Edit column", "Edit name:", initialValue: ColumnToEdit);
             if (!string.IsNullOrEmpty(result))
             {
+                //TODO: Edit column
+                await Shell.Current.DisplayAlert("TODO", "Edit column not implemented", "OK");
             }
         }
 
@@ -65,11 +60,19 @@ namespace CollectionManager.ViewModels
         {
             if (string.IsNullOrEmpty(NameToEdit))
             {
-                App.CollectionRepo.AddCollection(newName);
+                App.CollectionRepo.AddCollection(
+                        new Models.Collection
+                        {
+                            Name = newName,
+                            AdditionalColumns = Columns.ToList(),
+                            Items = new List<Models.Item>()
+                        }
+                    );
             }
             else
             {
-                //App.CollectionRepo.EditCollectionName(NameToEdit, newName);
+                //TODO: Edit collection
+                await Shell.Current.DisplayAlert("TODO", "Edit not implemented", "OK");
             }
             await Shell.Current.Navigation.PopModalAsync();
         }

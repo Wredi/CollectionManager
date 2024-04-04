@@ -6,9 +6,22 @@ using System.Threading.Tasks;
 
 namespace CollectionManager.Models
 {
-    class Collection
+    public class Collection
     {
         public string Name { get; set; }
-        public List<string> Columns { get; set; }
+        public List<string> AdditionalColumns { get; set; }
+        public List<Item> Items { get; set; }
+
+        public static List<string> GetDefaultAdditionalColumnsNames()
+        {
+            return new List<string> { "Price", "Valuation" };
+        }
+
+        public string ToText()
+        {
+            return Item.GetBasicColumnNames() + ";" + string.Join(";", AdditionalColumns)
+                + Environment.NewLine 
+                + Items.Aggregate("", (s, obj) => s + obj.ToText() + Environment.NewLine);
+        }
     }
 }

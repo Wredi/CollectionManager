@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,19 +18,30 @@ namespace CollectionManager.Data
             _filesDirectory = filesDirectory;
         }
 
-        public List<string> GetDefaultColumnNames()
+        public string FilepathFromCollection(string collectionName)
         {
-            return new List<string> { "Image", "Name", "Price", "Status", "Valuation" };
+            return Path.Combine(_filesDirectory, $"{collectionName}.collection.txt");
         }
 
-        public void AddCollection(string collectionName)
+        public IEnumerable<string> GetCollectionNames()
         {
+            return Directory
+                    .EnumerateFiles(_filesDirectory, "*.collection.txt")
+                    .Select(Path.GetFileName)
+                    .Select(filename => filename.Substring(0, filename.IndexOf('.')));
+        }
 
+        public void AddCollection(Models.Collection collection)
+        {
+            File.WriteAllText(
+                    FilepathFromCollection(collection.Name),
+                    collection.ToText()
+                );
         }
 
         public void DeleteCollection(string collectionName)
         {
-
+            File.Delete(FilepathFromCollection(collectionName));
         }
     }
 }

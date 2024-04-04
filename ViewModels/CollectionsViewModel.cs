@@ -1,51 +1,40 @@
 ﻿using CollectionManager.Pages;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
 namespace CollectionManager.ViewModels
 {
-    public partial class CollectionsViewModel
+    public partial class CollectionsViewModel : ObservableObject
     {
-        public ObservableCollection<string> Collections { get; set; }
+        [ObservableProperty]
+        public ObservableCollection<string> collections;
 
         private string currSelectedCollection;
 
-        List<string> gradeNames = new List<string> { "sdfdfs", "dsfdfs", "fgasas", "dfsaaa", "dfsdsfaasdaads" };
-        List<string> GetCollectionsNames()
-        {
-            return gradeNames;
-        }
-
-        void DeleteCollectionName(string name)
-        {
-            gradeNames.Remove(name);
-        }
-
-        void AddCollection(string grade)
-        {
-            gradeNames.Add(grade);
-        }
-
         public void LoadCollections()
         {
-            Collections.Clear();
-            foreach(var grade in GetCollectionsNames())
-            {
-                Collections.Add(grade);
-            }
+            Collections = new ObservableCollection<string>(App.CollectionRepo.GetCollectionNames());
         }
 
         [RelayCommand]
-        private void SelectCollection(string selectedGrade)
+        private void SelectCollection(string selectedCollection)
         {
-            currSelectedCollection = selectedGrade;
+            currSelectedCollection = selectedCollection;
         }
 
         [RelayCommand]
-        private void DeleteSelectedGrade()
+        private void DeleteSelectedCollection()
         {
-            DeleteCollectionName(currSelectedCollection);
+            App.CollectionRepo.DeleteCollection(currSelectedCollection);
             Collections.Remove(currSelectedCollection);
+        }
+
+        [RelayCommand]
+        private async Task ApproveSelectedCollection()
+        {
+            if (currSelectedCollection == null) return;
+            await Shell.Current.GoToAsync($"{nameof(Pages.ViewCollectionPage)}?selected={currSelectedCollection}");
         }
 
         [RelayCommand]
@@ -69,7 +58,7 @@ namespace CollectionManager.ViewModels
         [RelayCommand]
         private async Task EditSelectedCollection()
         {
-            LoadCollections();
+            await Shell.Current.DisplayAlert("TODO", "EditSelectedCollection not implemented", "OK");
         }
 
         public CollectionsViewModel()
