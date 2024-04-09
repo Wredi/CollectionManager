@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CollectionManager.Models;
 
@@ -92,6 +94,52 @@ namespace CollectionManager.Data
         public void DeleteCollection(string collectionName)
         {
             File.Delete(FilepathFromCollection(collectionName));
+        }
+
+        public void ZipCollection(Stream stream, string collectionName)
+        {
+            string[] imageFiles = Directory.GetFiles(_filesDirectory, $"{collectionName}.image.*");
+
+            using (ZipArchive zip = new ZipArchive(stream, ZipArchiveMode.Create, true))
+            {
+                zip.CreateEntryFromFile(FilepathFromCollection(collectionName), $"{collectionName}.collection.txt");
+
+                foreach (string imageFile in imageFiles)
+                {
+                    zip.CreateEntryFromFile(imageFile, Path.GetFileName(imageFile));
+                }
+            }
+        }
+
+        public void UnzipAndMergeCollection(string filePath, string dstCollection)
+        {
+            string dstCollectionPath = FilepathFromCollection(dstCollection);
+            using (ZipArchive zip = ZipFile.Open(filePath, ZipArchiveMode.Read))
+            {
+                foreach (ZipArchiveEntry entry in zip.Entries)
+                {
+                    if (entry.FullName.EndsWith(".collection.txt", StringComparison.OrdinalIgnoreCase))
+                    {
+                        using (StreamReader reader = new StreamReader(entry.Open()))
+                        {
+                            using (StreamReader readerDst = new StreamReader(dstCollectionPath))
+                            {
+                                if (reader.ReadLine() != readerDst.ReadLine())
+                                {
+                                    return;
+                                }
+                            }
+                            string collectionText = reader.ReadToEnd();
+                            File.AppendAllText(dstCollectionPath, collectionText);
+                        }
+                    }
+                    else if (entry.FullName.Contains(".image."))
+                    {
+                        string newImageName = $"{dstCollection}{entry.FullName.Substring(entry.FullName.IndexOf('.'))}";
+                        entry.ExtractToFile(Path.Combine(_filesDirectory, newImageName), true);
+                    }
+                }
+            }
         }
     }
 }

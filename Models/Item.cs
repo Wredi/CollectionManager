@@ -45,6 +45,11 @@ namespace CollectionManager.Models
             return Values[1];
         }
 
+        public string GetStatus()
+        {
+            return Values[2];
+        }
+
         public static List<string> GetBasicColumnNames()
         {
             return new List<string> { "Image", "Name", "Status" };

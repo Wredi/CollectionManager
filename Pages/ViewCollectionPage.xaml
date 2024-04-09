@@ -13,6 +13,9 @@
             <Setter Property="StrokeThickness" Value="1" />
             <Setter Property="Margin" Value="-1" />
         </Style>
+        <Style x:Key="soldBorderCell" TargetType="Border" BasedOn="{StaticResource borderCell}">
+            <Setter Property="Background" Value="#999"/>
+        </Style>
         <Style x:Key="cellLabel" TargetType="Label">
             <Setter Property="Margin" Value="10" />
             <Setter Property="HorizontalOptions" Value="Center" />
@@ -27,6 +30,8 @@
             <StackLayout Spacing="5">
                 <StackLayout Orientation="Horizontal">
                     <Button Text="Add item" Command="{Binding AddItemCommand}" />
+                    <Button Text="Export collection" Command="{Binding ExportCollectionCommand}" />
+                    <Button Text="Import collection" Command="{Binding ImportCollectionCommand}" />
                 </StackLayout>
                 <StackLayout HorizontalOptions="Start">
                     <Border Stroke="#333" StrokeThickness="1" x:Name="collection"/>

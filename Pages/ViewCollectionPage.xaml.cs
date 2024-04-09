@@ -20,10 +20,10 @@ public partial class ViewCollectionPage : ContentPage
             viewModel.Columns.Concat(new List<string> { "Controls" }).ToList(),
             viewModel.Items.ToList()
             );
-        viewModel.Items.CollectionChanged += Items_CollectionChanged;
+        viewModel.ForceReRender += OnForceReRender;
     }
 
-    private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void OnForceReRender(object sender, EventArgs e)
     {
         ViewCollectionViewModel viewModel = (ViewCollectionViewModel)BindingContext;
         collection.Content = ItemCollectionGrid(
@@ -33,10 +33,10 @@ public partial class ViewCollectionPage : ContentPage
             );
     }
 
-    private Border GridBorderElement(View element)
+    private Border GridBorderElement(View element, Style style)
 	{
 		Border border = new Border();
-		border.Style = (Style)Resources["borderCell"];
+		border.Style = style;
 		border.Content = element;
 		return border;
 	}
@@ -75,25 +75,27 @@ public partial class ViewCollectionPage : ContentPage
         for (int c = 0; c < header.Count(); ++c)
         {
 			Label el = HeaderLabel(header[c]);
-            grid.Add(GridBorderElement(el), c, 0);
+            grid.Add(GridBorderElement(el, (Style)Resources["borderCell"]), c, 0);
         }
 
         for(int r = 0; r < collection.Count(); ++r)
         {
+            
+            Style style = collection[r].GetStatus() == "Sold" ? (Style)Resources["soldBorderCell"] : (Style)Resources["borderCell"];
             Image image = new Image
             {
                 Source = ImageSource.FromFile(collection[r].ImagePath(collectionName)),
                 WidthRequest = 200,
                 HeightRequest = 200,
             };
-            grid.Add(GridBorderElement(image), 0, r+1);
+            grid.Add(GridBorderElement(image, style), 0, r+1);
 
             for (int c = 1; c < collection[r].Values.Count; ++c)
             {
                 Label el = CellLabel(collection[r].Values[c]);
-                grid.Add(GridBorderElement(el), c, r+1);
+                grid.Add(GridBorderElement(el, style), c, r+1);
             }
-            grid.Add(GridBorderElement(ControlButtons(collection[r])), collection[r].Values.Count, r + 1);
+            grid.Add(GridBorderElement(ControlButtons(collection[r]), style), collection[r].Values.Count, r + 1);
         }
 
         return grid;

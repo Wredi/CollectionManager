@@ -1,4 +1,5 @@
 ﻿using CollectionManager.Pages;
+using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -8,6 +9,7 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CollectionManager.ViewModels
@@ -25,11 +27,48 @@ namespace CollectionManager.ViewModels
         [ObservableProperty]
         public ObservableCollection<Models.Item> items;
 
+        public event EventHandler ForceReRender;
+
         public ViewCollectionViewModel()
         {
             columns = new List<string>();
             items = new ObservableCollection<Models.Item>();
             collectionName = string.Empty;
+        }
+
+        [RelayCommand]
+        public async Task ExportCollection()
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            using var stream = new MemoryStream();
+            App.CollectionRepo.ZipCollection(stream, CollectionName);
+            var fileSaverResult = await FileSaver.Default.SaveAsync($"{CollectionName}.zip", stream, cancellationTokenSource.Token);
+        }
+
+        [RelayCommand]
+        public async Task ImportCollection()
+        {
+            var zipFileType = new FilePickerFileType(
+                    new Dictionary<DevicePlatform, IEnumerable<string>>
+                {
+                { DevicePlatform.iOS, new[] { ".zip" } },
+                { DevicePlatform.Android, new[] { ".zip" } },
+                { DevicePlatform.WinUI, new[] { ".zip" } },
+                { DevicePlatform.Tizen, new[] { ".zip" } },
+                { DevicePlatform.macOS, new[] { ".zip" } },
+                });
+            var result = await FilePicker.PickAsync(new PickOptions
+            {
+                PickerTitle = "Choose ZIP file to import",
+                FileTypes = zipFileType
+            });
+
+            if (result == null)
+                return;
+
+            App.CollectionRepo.UnzipAndMergeCollection(result.FullPath, CollectionName);
+            LoadCollection();
+            ForceReRender.Invoke(this, EventArgs.Empty);
         }
 
         [RelayCommand]
@@ -53,6 +92,7 @@ namespace CollectionManager.ViewModels
                 Columns = Columns,
                 Items = Items.ToList(),
             });
+            ForceReRender.Invoke(this, EventArgs.Empty);
         }
 
         [RelayCommand]
@@ -75,7 +115,21 @@ namespace CollectionManager.ViewModels
             Models.Collection c = App.CollectionRepo.LoadCollection(selectedCollection);
             CollectionName = c.Name;
             Columns = c.Columns;
-            Items = new ObservableCollection<Models.Item>(c.Items);
+
+            List<Models.Item> sold = new List<Models.Item>();
+            List<Models.Item> other = new List<Models.Item>();
+            foreach (Models.Item item in c.Items)
+            {
+                if(item.GetStatus() == "Sold")
+                {
+                    sold.Add(item);
+                }
+                else
+                {
+                    other.Add(item);
+                }
+            }
+            Items = new ObservableCollection<Models.Item>(other.Concat(sold));
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
