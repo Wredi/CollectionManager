@@ -18,7 +18,7 @@ namespace CollectionManager.ViewModels
         public CollectionFormViewModel(Models.Collection collection)
         {
             NameToEdit = collection.Name;
-            Columns = new ObservableCollection<string>(collection.AdditionalColumns);
+            Columns = new ObservableCollection<string>(collection.Columns);
         }
 
         [RelayCommand]
@@ -60,11 +60,11 @@ namespace CollectionManager.ViewModels
         {
             if (string.IsNullOrEmpty(NameToEdit))
             {
-                App.CollectionRepo.AddCollection(
+                App.CollectionRepo.SaveCollection(
                         new Models.Collection
                         {
                             Name = newName,
-                            AdditionalColumns = Columns.ToList(),
+                            Columns = Models.Item.GetBasicColumnNames().Concat(Columns).ToList(),
                             Items = new List<Models.Item>()
                         }
                     );

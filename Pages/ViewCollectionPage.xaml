@@ -7,6 +7,31 @@
     <ContentPage.BindingContext>
         <viewModels:ViewCollectionViewModel/>
     </ContentPage.BindingContext>
-    <VerticalStackLayout>
-    </VerticalStackLayout>
+    <ContentPage.Resources>
+        <Style x:Key="borderCell" TargetType="Border">
+            <Setter Property="Stroke" Value="#333" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Margin" Value="-1" />
+        </Style>
+        <Style x:Key="cellLabel" TargetType="Label">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+        <Style x:Key="cellHeaderLabel" TargetType="Label" BasedOn="{StaticResource cellLabel}">
+            <Setter Property="FontAttributes" Value="Bold"/>
+        </Style>
+    </ContentPage.Resources>
+    <ScrollView>
+        <StackLayout Spacing="10" Margin="5">
+            <StackLayout Spacing="5">
+                <StackLayout Orientation="Horizontal">
+                    <Button Text="Add item" Command="{Binding AddItemCommand}" />
+                </StackLayout>
+                <StackLayout HorizontalOptions="Start">
+                    <Border Stroke="#333" StrokeThickness="1" x:Name="collection"/>
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

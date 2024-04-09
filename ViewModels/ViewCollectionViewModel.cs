@@ -1,8 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CollectionManager.Pages;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,17 +20,39 @@ namespace CollectionManager.ViewModels
         public string collectionName;
 
         [ObservableProperty]
-        public List<string> additionalColumns;
+        public List<string> columns;
 
         [ObservableProperty]
-        public ObservableCollection<ItemViewModel> items;
+        public ObservableCollection<Models.Item> items;
+
+        public ViewCollectionViewModel()
+        {
+            columns = new List<string>();
+            items = new ObservableCollection<Models.Item>();
+            collectionName = string.Empty;
+        }
+
+        [RelayCommand]
+        public async Task AddItem()
+        {
+            await Shell.Current.Navigation.PushAsync(new ItemFormPage
+            {
+                BindingContext = new ItemFormViewModel(selectedCollection, Columns.GetRange(3, Columns.Count - 3))
+            });
+            LoadCollection();
+        }
+
+        public void OnAppearing()
+        {
+            LoadCollection();
+        }
 
         public void LoadCollection()
         {
             Models.Collection c = App.CollectionRepo.LoadCollection(selectedCollection);
             CollectionName = c.Name;
-            AdditionalColumns = c.AdditionalColumns;
-            Items = new ObservableCollection<ItemViewModel>(c.Items.Select(i => new ItemViewModel(i)));
+            Columns = c.Columns;
+            Items = new ObservableCollection<Models.Item>(c.Items);
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -35,7 +60,6 @@ namespace CollectionManager.ViewModels
             if (query.ContainsKey("selected"))
             {
                 selectedCollection = query["selected"].ToString();
-                LoadCollection();
             }
         }
     }

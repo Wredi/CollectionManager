@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CollectionManager.Pages.ItemFormPage"
+             Title="ItemFormPage">
+    <StackLayout Orientation="Vertical" VerticalOptions="Start">
+        <StackLayout Orientation="Vertical" VerticalOptions="Start" x:Name="inputs">
+            <StackLayout Orientation="Vertical" VerticalOptions="Start">
+                <StackLayout Orientation="Vertical">
+                    <Label Text="Image source"/>
+                    <Entry x:Name="imageSource"/>
+                </StackLayout>
+                <StackLayout Orientation="Vertical">
+                    <Label Text="Name"/>
+                    <Entry x:Name="name"/>
+                </StackLayout>
+                <StackLayout Orientation="Vertical">
+                    <Label Text="Status"/>
+                    <Picker ItemsSource="{Binding StatusOptions}" x:Name="status"/>
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
+        <Button Clicked="SaveItem_Clicked" Text="Save item"/>
+    </StackLayout>
+</ContentPage>

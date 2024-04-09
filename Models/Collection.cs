@@ -9,7 +9,7 @@ namespace CollectionManager.Models
     public class Collection
     {
         public string Name { get; set; }
-        public List<string> AdditionalColumns { get; set; }
+        public List<string> Columns { get; set; }
         public List<Item> Items { get; set; }
 
         public static List<string> GetDefaultAdditionalColumnsNames()
@@ -19,9 +19,20 @@ namespace CollectionManager.Models
 
         public string ToText()
         {
-            return Item.GetBasicColumnNames() + ";" + string.Join(";", AdditionalColumns)
+            return string.Join(";", Columns)
                 + Environment.NewLine 
                 + Items.Aggregate("", (s, obj) => s + obj.ToText() + Environment.NewLine);
+        }
+
+        public static Collection FromText(string name, string text)
+        {
+            string[] lines = text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            return new Collection
+            {
+                Name = name,
+                Columns = lines[0].Split(new char[] { ';' }).ToList(),
+                Items = new ArraySegment<string>(lines, 1, lines.Length - 1).Select(line => Item.FromText(line)).ToList()
+            };
         }
     }
 }

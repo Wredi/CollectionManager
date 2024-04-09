@@ -8,19 +8,35 @@ namespace CollectionManager.Models
 {
     public class Item
     {
-        public string Image {  get; set; }
-        public string Name { get; set; }
-        public Status Status { get; set; }
+        public List<string> Values { get; set; }
 
-        public List<string> AdditionalValues { get; set; }
         public string ToText()
         {
-            return Name + ";" + Image + ";" + Status.ToText() + ";" + string.Join(";", AdditionalValues);
+            return string.Join(";", Values);
         }
 
-        public static string GetBasicColumnNames()
+        public static Item FromText(string text)
         {
-            return "Name;Image;Status";
+            string[] vars = text.Split(new char[] { ';' });
+            return new Item
+            {
+                Values = vars.ToList()
+            };
         }
+
+        public static List<string> GetBasicColumnNames()
+        {
+            return new List<string> { "Image", "Name", "Status" };
+        }
+
+        public static List<string> GetStatusOptions()
+        {
+            return new List<string> { "New", "Used", "For sale", "Sold", "Want to buy" };
+        }
+
+        //public static string GetBasicColumnNames()
+        //{
+        //    return "Name;Image;Status";
+        //}
     }
 }

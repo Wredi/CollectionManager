@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
+using CollectionManager.Models;
 
 namespace CollectionManager.Data
 {
@@ -31,12 +32,34 @@ namespace CollectionManager.Data
                     .Select(filename => filename.Substring(0, filename.IndexOf('.')));
         }
 
-        public void AddCollection(Models.Collection collection)
+        public void SaveCollection(Collection collection)
         {
             File.WriteAllText(
                     FilepathFromCollection(collection.Name),
                     collection.ToText()
                 );
+        }
+
+        public Collection LoadCollection(string collectionName)
+        {
+            return Collection.FromText(collectionName, File.ReadAllText(FilepathFromCollection(collectionName)));
+        }
+
+        public void AddItem(string collectionName, Models.Item item)
+        {
+            File.AppendAllText(FilepathFromCollection(collectionName), item.ToText() + Environment.NewLine);
+        }
+
+        public string GetImagePath(string collectionName, string itemImagePath)
+        {
+            return Path.Combine(_filesDirectory, $"{collectionName}.image.{itemImagePath}");
+        }
+
+        public string SaveImageFromFile(string collectionName, string filePath)
+        {
+            string itemImagePath = Guid.NewGuid().ToString() + Path.GetExtension(filePath);
+            File.Copy(filePath, GetImagePath(collectionName, itemImagePath));
+            return itemImagePath;
         }
 
         public void DeleteCollection(string collectionName)
