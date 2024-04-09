@@ -40,13 +40,6 @@ namespace CollectionManager.ViewModels
         [RelayCommand]
         private async Task AddCollection()
         {
-            //string result = await Shell.Current.DisplayPromptAsync("Add grade", "Enter new grade name:");
-            //if(!string.IsNullOrEmpty(result))
-            //{
-            //    AddCollection(result);
-            //    LoadCollections();
-            //}
-
             CollectionFormViewModel vm = new CollectionFormViewModel();
             await Shell.Current.Navigation.PushAsync(new CollectionFormPage
             {
@@ -58,7 +51,14 @@ namespace CollectionManager.ViewModels
         [RelayCommand]
         private async Task EditSelectedCollection()
         {
-            await Shell.Current.DisplayAlert("TODO", "EditSelectedCollection not implemented", "OK");
+            if (currSelectedCollection == null) return;
+
+            CollectionFormViewModel vm = new CollectionFormViewModel(App.CollectionRepo.LoadCollection(currSelectedCollection));
+            await Shell.Current.Navigation.PushAsync(new CollectionFormPage
+            {
+                BindingContext = vm
+            });
+            LoadCollections();
         }
 
         public CollectionsViewModel()

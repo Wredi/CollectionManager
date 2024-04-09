@@ -17,6 +17,11 @@ namespace CollectionManager.Models
             return new List<string> { "Price", "Valuation" };
         }
 
+        public List<string> GetAdditionalColumns()
+        {
+            return Columns.GetRange(3, Columns.Count - 3);
+        }
+
         public string ToText()
         {
             return string.Join(";", Columns)

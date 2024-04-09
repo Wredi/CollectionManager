@@ -5,7 +5,7 @@
              Title="CollectionFormPage">
     <StackLayout Orientation="Vertical" VerticalOptions="Start">
         <Label Text="Enter name:"/>
-        <Entry Placeholder="Enter name" x:Name="gradeName" Text="{Binding Path=NameToEdit, Mode=OneWay}"/>
+        <Entry Placeholder="Enter name" x:Name="collectionName" Text="{Binding Path=NameToEdit, Mode=OneWay}"/>
         <StackLayout Orientation="Horizontal">
             <Button Text="Add column" Command="{Binding AddColumnCommand}"/>
             <Button Text="Edit column" Command="{Binding EditColumnCommand}"/>
@@ -22,6 +22,6 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button Text="OK" Command="{Binding ApproveFormCommand}" CommandParameter="{Binding Source={x:Reference gradeName}, Path=Text}"/>
+        <Button Text="OK" Command="{Binding ApproveFormCommand}" CommandParameter="{Binding Source={x:Reference collectionName}, Path=Text}"/>
     </StackLayout>
 </ContentPage>

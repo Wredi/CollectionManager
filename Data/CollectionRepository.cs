@@ -69,6 +69,20 @@ namespace CollectionManager.Data
             SaveCollection(collection);
         }
 
+        public void RenameCollection(string collectionName, string newName)
+        {
+            File.Move(FilepathFromCollection(collectionName), FilepathFromCollection(newName));
+            foreach(var i in Directory.EnumerateFiles(_filesDirectory, $"{collectionName}.image.*"))
+            {
+                string fileName = Path.GetFileName(i);
+                string directoryPath = Path.GetDirectoryName(i);
+                int dotIndex = fileName.IndexOf('.');
+                string newFileName = newName + fileName.Substring(dotIndex);
+                string newFilePath = Path.Combine(directoryPath, newFileName);
+                File.Move(i, newFilePath);
+            }
+        }
+
         public void RemoveItemImage(string collectionName, Models.Item item)
         {
             string imagePath = GetImagePath(collectionName, item.Values[0]);

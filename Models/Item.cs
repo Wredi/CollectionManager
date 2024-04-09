@@ -25,6 +25,16 @@ namespace CollectionManager.Models
             };
         }
 
+        public void RemoveAdditionalColumn(int idx)
+        {
+            Values.RemoveAt(idx + 3);
+        }
+
+        public void AddValue(string value)
+        {
+            Values.Add(value);
+        }
+
         public string ImagePath(string collectionName)
         {
             return App.CollectionRepo.GetImagePath(collectionName, Values[0]);

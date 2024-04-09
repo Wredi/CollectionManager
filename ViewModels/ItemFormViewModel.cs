@@ -11,7 +11,7 @@ namespace CollectionManager.ViewModels
 {
     public partial class ItemFormViewModel : ObservableObject
     {
-        private string collectionName;
+        public string collectionName;
 
         public List<string> StatusOptions => Models.Item.GetStatusOptions();
 

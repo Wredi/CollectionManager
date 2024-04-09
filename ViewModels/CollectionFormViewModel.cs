@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace CollectionManager.ViewModels
@@ -6,19 +7,25 @@ namespace CollectionManager.ViewModels
     partial class CollectionFormViewModel
     {
         public string NameToEdit { get; set; }
+
         public ObservableCollection<string> Columns { get; set; }
+
+        public List<Models.Item> Items { get; set; }
+
         public string ColumnToEdit { get; set; }
 
         public CollectionFormViewModel()
         {
             NameToEdit = string.Empty;
             Columns = new ObservableCollection<string>(Models.Collection.GetDefaultAdditionalColumnsNames());
+
         }
 
         public CollectionFormViewModel(Models.Collection collection)
         {
             NameToEdit = collection.Name;
-            Columns = new ObservableCollection<string>(collection.Columns);
+            Columns = new ObservableCollection<string>(collection.GetAdditionalColumns());
+            Items = collection.Items;
         }
 
         [RelayCommand]
@@ -34,6 +41,13 @@ namespace CollectionManager.ViewModels
             if (!string.IsNullOrEmpty(result))
             {
                 Columns.Add(result);
+                if (!string.IsNullOrEmpty(NameToEdit))
+                {
+                    foreach(var item in Items)
+                    {
+                        item.AddValue("");
+                    }
+                }
             }
         }
 
@@ -44,15 +58,24 @@ namespace CollectionManager.ViewModels
             string result = await Shell.Current.DisplayPromptAsync("Edit column", "Edit name:", initialValue: ColumnToEdit);
             if (!string.IsNullOrEmpty(result))
             {
-                //TODO: Edit column
-                await Shell.Current.DisplayAlert("TODO", "Edit column not implemented", "OK");
+                var idx = Columns.IndexOf(ColumnToEdit);
+                Columns.RemoveAt(idx);
+                Columns.Insert(idx, result);
             }
         }
 
         [RelayCommand]
         private void DeleteColumn()
         {
-            Columns.Remove(ColumnToEdit);
+            var idx = Columns.IndexOf(ColumnToEdit);
+            Columns.RemoveAt(idx);
+            if (!string.IsNullOrEmpty(NameToEdit))
+            {
+                foreach (var item in Items)
+                {
+                    item.RemoveAdditionalColumn(idx);
+                }
+            }
         }
 
         [RelayCommand]
@@ -71,8 +94,17 @@ namespace CollectionManager.ViewModels
             }
             else
             {
-                //TODO: Edit collection
-                await Shell.Current.DisplayAlert("TODO", "Edit not implemented", "OK");
+                if(NameToEdit != newName){
+                    App.CollectionRepo.RenameCollection(NameToEdit, newName);
+                }
+                App.CollectionRepo.SaveCollection(
+                        new Models.Collection
+                        {
+                            Name = newName,
+                            Columns = Models.Item.GetBasicColumnNames().Concat(Columns).ToList(),
+                            Items = Items.ToList()
+                        }
+                    );
             }
             await Shell.Current.Navigation.PopModalAsync();
         }
