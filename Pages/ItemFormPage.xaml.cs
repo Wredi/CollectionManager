@@ -12,12 +12,25 @@ public partial class ItemFormPage : ContentPage
 	protected override void OnAppearing()
 	{
         ItemFormViewModel viewModel = (ItemFormViewModel)BindingContext;
-        inputs.Add(GenerateInputs(viewModel.AdditionalColumns));
+		List<string> initialValues = viewModel.initialValues;
+		if(initialValues != null)
+		{
+            imageSource.Text = initialValues[0];
+            name.Text = initialValues[1];
+            status.SelectedItem = initialValues[2];
+            inputs.Add(GenerateInputs(viewModel.AdditionalColumns, initialValues.GetRange(3, initialValues.Count - 3)));
+		}
+		else
+		{
+            inputs.Add(GenerateInputs(viewModel.AdditionalColumns, null));
+        }
+
     }
 
-	public StackLayout GenerateSingleInput(string labelName)
+    public StackLayout GenerateSingleInput(string labelName, string initialValue)
 	{
 		Entry entry = new Entry();
+		entry.Text = initialValue;
         return GenerateSingleInput(labelName, entry);
     }
 
@@ -34,15 +47,15 @@ public partial class ItemFormPage : ContentPage
         return stackLayout;
     }
 
-	public StackLayout GenerateInputs(List<string> additionalColumns)
+	public StackLayout GenerateInputs(List<string> additionalColumns, List<string> initialValues)
 	{
         StackLayout stackLayout = new StackLayout();
 		stackLayout.Orientation= StackOrientation.Vertical;
 		stackLayout.VerticalOptions = LayoutOptions.Start;
 
-		foreach(var c in additionalColumns)
+		for(int i = 0; i < additionalColumns.Count; ++i)
 		{
-			StackLayout inputLayout = GenerateSingleInput(c);
+			StackLayout inputLayout = GenerateSingleInput(additionalColumns[i], initialValues != null ? initialValues[i] : "");
 			stackLayout.Add(inputLayout);	
 		}
 		return stackLayout;

@@ -42,6 +42,29 @@ namespace CollectionManager.ViewModels
             LoadCollection();
         }
 
+        [RelayCommand]
+        public void RemoveItem(Models.Item item)
+        {
+            App.CollectionRepo.RemoveItemImage(CollectionName, item);
+            Items.Remove(item);
+            App.CollectionRepo.SaveCollection(new Models.Collection
+            {
+                Name = CollectionName,
+                Columns = Columns,
+                Items = Items.ToList(),
+            });
+        }
+
+        [RelayCommand]
+        public async Task EditItem(Models.Item item)
+        {
+            await Shell.Current.Navigation.PushAsync(new ItemFormPage
+            {
+                BindingContext = new ItemFormViewModel(selectedCollection, Columns.GetRange(3, Columns.Count - 3), item.Values)
+            });
+            LoadCollection();
+        }
+
         public void OnAppearing()
         {
             LoadCollection();

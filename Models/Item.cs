@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,16 @@ namespace CollectionManager.Models
             {
                 Values = vars.ToList()
             };
+        }
+
+        public string ImagePath(string collectionName)
+        {
+            return App.CollectionRepo.GetImagePath(collectionName, Values[0]);
+        }
+
+        public string GetName()
+        {
+            return Values[1];
         }
 
         public static List<string> GetBasicColumnNames()

@@ -62,6 +62,19 @@ namespace CollectionManager.Data
             return itemImagePath;
         }
 
+        public void EditItem(string collectionName, string itemNameToEdit, Item newItem)
+        {
+            Collection collection = LoadCollection(collectionName);
+            collection.Items = collection.Items.Select(x => x.GetName() == itemNameToEdit ? newItem : x).ToList();
+            SaveCollection(collection);
+        }
+
+        public void RemoveItemImage(string collectionName, Models.Item item)
+        {
+            string imagePath = GetImagePath(collectionName, item.Values[0]);
+            File.Delete(imagePath);
+        }
+
         public void DeleteCollection(string collectionName)
         {
             File.Delete(FilepathFromCollection(collectionName));

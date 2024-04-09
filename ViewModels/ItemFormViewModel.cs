@@ -18,22 +18,34 @@ namespace CollectionManager.ViewModels
         [ObservableProperty]
         public List<string> additionalColumns;
 
+        public List<string> initialValues;
+
         [RelayCommand]
         public async Task SaveItem(Models.Item item)
         {
-            //Models.Item item = new Models.Item
-            //{
-            //    Values = new List<string> { Image, Name, Status }.Concat()
-            //};
-            item.Values[0] = App.CollectionRepo.SaveImageFromFile(collectionName, item.Values[0]);
-            App.CollectionRepo.AddItem(collectionName, item);
+            if(initialValues == null)
+            {
+                item.Values[0] = App.CollectionRepo.SaveImageFromFile(collectionName, item.Values[0]);
+                App.CollectionRepo.AddItem(collectionName, item);
+            }
+            else
+            {
+                if (initialValues[0] != item.Values[0])
+                {
+                    App.CollectionRepo.RemoveItemImage(collectionName, item);
+                    item.Values[0] = App.CollectionRepo.SaveImageFromFile(collectionName, item.Values[0]);
+                }
+                App.CollectionRepo.EditItem(collectionName, initialValues[1], item);
+            }
+
             await Shell.Current.Navigation.PopModalAsync();
         }
 
-        public ItemFormViewModel(string collectionName, List<string> additionalColumns) 
+        public ItemFormViewModel(string collectionName, List<string> additionalColumns, List<string> initialValues=null) 
         {
             this.collectionName = collectionName;
             this.additionalColumns = additionalColumns;
+            this.initialValues = initialValues;
         }
     }
 }

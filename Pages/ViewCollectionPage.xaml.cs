@@ -1,4 +1,6 @@
 using CollectionManager.ViewModels;
+using System.Diagnostics;
+using System.Reflection.Metadata;
 
 namespace CollectionManager.Pages;
 
@@ -13,7 +15,22 @@ public partial class ViewCollectionPage : ContentPage
 	{
         ViewCollectionViewModel viewModel = (ViewCollectionViewModel)BindingContext;
 		viewModel.OnAppearing();
-        collection.Content = ItemCollectionGrid(viewModel.Columns, viewModel.Items.ToList());
+        collection.Content = ItemCollectionGrid(
+            viewModel.CollectionName,
+            viewModel.Columns.Concat(new List<string> { "Controls" }).ToList(),
+            viewModel.Items.ToList()
+            );
+        viewModel.Items.CollectionChanged += Items_CollectionChanged;
+    }
+
+    private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        ViewCollectionViewModel viewModel = (ViewCollectionViewModel)BindingContext;
+        collection.Content = ItemCollectionGrid(
+            viewModel.CollectionName,
+            viewModel.Columns.Concat(new List<string> { "Controls" }).ToList(),
+            viewModel.Items.ToList()
+            );
     }
 
     private Border GridBorderElement(View element)
@@ -24,8 +41,28 @@ public partial class ViewCollectionPage : ContentPage
 		return border;
 	}
 
-    string path = @"C:\Users\HARDPC\Desktop\1664828258199964268.gif";
-    private Grid ItemCollectionGrid(List<string> header, List<Models.Item> collection)
+    private StackLayout ControlButtons(Models.Item item)
+    {
+        StackLayout stack = new StackLayout();
+        stack.Orientation = StackOrientation.Horizontal;
+        stack.VerticalOptions = LayoutOptions.Center;
+
+        Button editButton = new Button();
+        editButton.SetBinding(Button.CommandProperty, "EditItemCommand");
+        editButton.SetValue(Button.CommandParameterProperty, item);
+        editButton.Text = "Edit";
+
+        Button deleteButton = new Button();
+        deleteButton.SetBinding(Button.CommandProperty, "RemoveItemCommand");
+        deleteButton.SetValue(Button.CommandParameterProperty, item);
+        deleteButton.Text = "Delete";
+
+        stack.Add(editButton);
+        stack.Add(deleteButton);
+        return stack;
+    }
+
+    private Grid ItemCollectionGrid(string collectionName, List<string> header, List<Models.Item> collection)
     {
         Grid grid = new Grid();
         grid.ColumnDefinitions = new ColumnDefinitionCollection(
@@ -45,7 +82,7 @@ public partial class ViewCollectionPage : ContentPage
         {
             Image image = new Image
             {
-                Source = ImageSource.FromFile(path),
+                Source = ImageSource.FromFile(collection[r].ImagePath(collectionName)),
                 WidthRequest = 200,
                 HeightRequest = 200,
             };
@@ -56,6 +93,7 @@ public partial class ViewCollectionPage : ContentPage
                 Label el = CellLabel(collection[r].Values[c]);
                 grid.Add(GridBorderElement(el), c, r+1);
             }
+            grid.Add(GridBorderElement(ControlButtons(collection[r])), collection[r].Values.Count, r + 1);
         }
 
         return grid;
