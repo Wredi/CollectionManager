@@ -37,6 +37,15 @@ namespace CollectionManager.ViewModels
         }
 
         [RelayCommand]
+        public async Task GenerateSummary()
+        {
+            await Shell.Current.Navigation.PushAsync(new CollectionSummaryPage
+            {
+                BindingContext = new CollectionSummaryViewModel(selectedCollection)
+            });
+        }
+
+        [RelayCommand]
         public async Task ExportCollection()
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();

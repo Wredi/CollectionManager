@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CollectionManager.Pages.CollectionSummaryPage"
+             Title="CollectionSummary">
+    <StackLayout Orientation="Vertical">
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Number of owned items:" />
+            <Label Text="{Binding OwnedItems}" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Number of sold items:" />
+            <Label Text="{Binding SoldItems}" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Number of items for sale:" />
+            <Label Text="{Binding ForSaleItems}" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

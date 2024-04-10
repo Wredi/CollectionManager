@@ -32,6 +32,7 @@
                     <Button Text="Add item" Command="{Binding AddItemCommand}" />
                     <Button Text="Export collection" Command="{Binding ExportCollectionCommand}" />
                     <Button Text="Import collection" Command="{Binding ImportCollectionCommand}" />
+                    <Button Text="Summary" Command="{Binding GenerateSummaryCommand}" />
                 </StackLayout>
                 <StackLayout HorizontalOptions="Start">
                     <Border Stroke="#333" StrokeThickness="1" x:Name="collection"/>

@@ -58,6 +58,9 @@
 	  <Compile Update="Pages\CollectionsPage.xaml.cs">
 	    <DependentUpon>CollectionsPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Pages\CollectionSummaryPage.xaml.cs">
+	    <DependentUpon>CollectionSummaryPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -65,6 +68,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\CollectionsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\CollectionSummaryPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ItemFormPage.xaml">
