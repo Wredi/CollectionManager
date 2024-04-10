@@ -66,7 +66,13 @@ namespace CollectionManager.ViewModels
             if (result == null)
                 return;
 
-            App.CollectionRepo.UnzipAndMergeCollection(result.FullPath, CollectionName);
+            string res = App.CollectionRepo.UnzipAndMergeCollection(result.FullPath, CollectionName);
+            if (!string.IsNullOrEmpty(res))
+            {
+                await Shell.Current.DisplayAlert("Error", res, "OK");
+                return;
+            }
+
             LoadCollection();
             ForceReRender.Invoke(this, EventArgs.Empty);
         }
@@ -84,7 +90,6 @@ namespace CollectionManager.ViewModels
         [RelayCommand]
         public void RemoveItem(Models.Item item)
         {
-            App.CollectionRepo.RemoveItemImage(CollectionName, item);
             Items.Remove(item);
             App.CollectionRepo.SaveCollection(new Models.Collection
             {

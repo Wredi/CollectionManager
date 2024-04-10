@@ -47,6 +47,32 @@ namespace CollectionManager.Data
             return Collection.FromText(collectionName, File.ReadAllText(FilepathFromCollection(collectionName)));
         }
 
+        public bool CheckDuplicates(string collectionName, string nameToCheck, string nameToSkip)
+        {
+            Collection coll = LoadCollection(collectionName);
+            return CheckDuplicates(coll.Items.Select(s => s.GetName() == nameToSkip ? null : s.GetName()), new List<string> { nameToCheck });
+        }
+
+        public bool CheckDuplicates(IEnumerable<Item> names, IEnumerable<Item> namesToCheck)
+        {
+            return CheckDuplicates(names.Select(s => s.GetName()), namesToCheck.Select(s => s.GetName()));
+        }
+
+        public bool CheckDuplicates(IEnumerable<string> names, IEnumerable<string> namesToCheck)
+        {
+            foreach (var name in names)
+            {
+                foreach (var item in namesToCheck)
+                {
+                    if (item == name)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         public void AddItem(string collectionName, Models.Item item)
         {
             File.AppendAllText(FilepathFromCollection(collectionName), item.ToText() + Environment.NewLine);
@@ -93,6 +119,10 @@ namespace CollectionManager.Data
 
         public void DeleteCollection(string collectionName)
         {
+            foreach (var i in Directory.EnumerateFiles(_filesDirectory, $"{collectionName}.image.*"))
+            {
+                File.Delete(i);
+            }
             File.Delete(FilepathFromCollection(collectionName));
         }
 
@@ -111,7 +141,7 @@ namespace CollectionManager.Data
             }
         }
 
-        public void UnzipAndMergeCollection(string filePath, string dstCollection)
+        public string UnzipAndMergeCollection(string filePath, string dstCollection)
         {
             string dstCollectionPath = FilepathFromCollection(dstCollection);
             using (ZipArchive zip = ZipFile.Open(filePath, ZipArchiveMode.Read))
@@ -124,13 +154,22 @@ namespace CollectionManager.Data
                         {
                             using (StreamReader readerDst = new StreamReader(dstCollectionPath))
                             {
-                                if (reader.ReadLine() != readerDst.ReadLine())
+                                string importedColumns = reader.ReadLine();
+                                string importedCollectionToAppend = reader.ReadToEnd();
+
+                                Collection currColl = Collection.FromText("", readerDst.ReadToEnd());
+                                Collection collToCheck = Collection.FromText("", importedColumns + importedCollectionToAppend);
+
+                                if(CheckDuplicates(currColl.Items, collToCheck.Items))
                                 {
-                                    return;
+                                    return "There are duplicated names in the imported collection";
                                 }
+                                if (currColl.Columns.SequenceEqual(collToCheck.Columns))
+                                {
+                                    return "Column layout is different in imported collection";
+                                }
+                                File.AppendAllText(dstCollectionPath, importedCollectionToAppend);
                             }
-                            string collectionText = reader.ReadToEnd();
-                            File.AppendAllText(dstCollectionPath, collectionText);
                         }
                     }
                     else if (entry.FullName.Contains(".image."))
@@ -140,6 +179,7 @@ namespace CollectionManager.Data
                     }
                 }
             }
+            return string.Empty;
         }
     }
 }
