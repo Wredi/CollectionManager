@@ -168,6 +168,8 @@ namespace CollectionManager.Data
                                 {
                                     return "Column layout is different in imported collection";
                                 }
+
+                                readerDst.Close();
                                 File.AppendAllText(dstCollectionPath, importedCollectionToAppend);
                             }
                         }

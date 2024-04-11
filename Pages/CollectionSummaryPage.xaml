@@ -3,18 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CollectionManager.Pages.CollectionSummaryPage"
              Title="CollectionSummary">
-    <StackLayout Orientation="Vertical">
-        <StackLayout Orientation="Horizontal">
-            <Label Text="Number of owned items:" />
-            <Label Text="{Binding OwnedItems}" />
+    <StackLayout Orientation="Vertical" Margin="10">
+        <StackLayout Orientation="Horizontal" Spacing="5">
+            <Label Text="Number of owned items:" FontSize="18"/>
+            <Label Text="{Binding OwnedItems}" FontSize="18"/>
         </StackLayout>
-        <StackLayout Orientation="Horizontal">
-            <Label Text="Number of sold items:" />
-            <Label Text="{Binding SoldItems}" />
+        <StackLayout Orientation="Horizontal" Spacing="5">
+            <Label Text="Number of sold items:" FontSize="18"/>
+            <Label Text="{Binding SoldItems}" FontSize="18"/>
         </StackLayout>
-        <StackLayout Orientation="Horizontal">
-            <Label Text="Number of items for sale:" />
-            <Label Text="{Binding ForSaleItems}" />
+        <StackLayout Orientation="Horizontal" Spacing="5">
+            <Label Text="Number of items for sale:" FontSize="18"/>
+            <Label Text="{Binding ForSaleItems}" FontSize="18"/>
         </StackLayout>
     </StackLayout>
 </ContentPage>

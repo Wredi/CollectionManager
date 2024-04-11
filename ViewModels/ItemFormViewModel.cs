@@ -39,10 +39,14 @@ namespace CollectionManager.ViewModels
             }
             else
             {
-                if (initialValues[0] != item.Values[0])
+                if (App.CollectionRepo.GetImagePath(collectionName, initialValues[0]) != item.Values[0])
                 {
                     //App.CollectionRepo.RemoveItemImage(collectionName, item);
                     item.Values[0] = App.CollectionRepo.SaveImageFromFile(collectionName, item.Values[0]);
+                }
+                else
+                {
+                    item.Values[0] = initialValues[0];
                 }
                 App.CollectionRepo.EditItem(collectionName, initialValues[1], item);
             }

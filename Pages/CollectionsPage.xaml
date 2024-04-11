@@ -8,19 +8,19 @@
         <viewModels:CollectionsViewModel/>
     </ContentPage.BindingContext>
 
-    <StackLayout VerticalOptions="Start">
-        <StackLayout Orientation="Horizontal">
-            <Button Text="Add collection" Command="{Binding AddCollectionCommand}"/>
-            <Button Text="Edit collection" Command="{Binding EditSelectedCollectionCommand}"/>
-            <Button Text="Delete collection" Command="{Binding DeleteSelectedCollectionCommand}"/>
-            <Button Text="Approve collection" Command="{Binding ApproveSelectedCollectionCommand}"/>
+    <StackLayout VerticalOptions="Start" Margin="10">
+        <StackLayout Orientation="Horizontal" Spacing="5">
+            <Button Text="Add collection" Command="{Binding AddCollectionCommand}" Background="#50BF50" TextColor="#fff"/>
+            <Button Text="Edit collection" Command="{Binding EditSelectedCollectionCommand}" Background="#10ABB4" TextColor="#fff"/>
+            <Button Text="Delete collection" Command="{Binding DeleteSelectedCollectionCommand}" Background="#ff0021" TextColor="#fff"/>
+            <Button Text="Select collection" Command="{Binding ApproveSelectedCollectionCommand}" Background="#446DF6" TextColor="#fff"/>
         </StackLayout>
-        <ListView ItemsSource="{Binding Collections}" ItemSelected="OnItemSelectedChanged">
+        <ListView ItemsSource="{Binding Collections}" ItemSelected="OnItemSelectedChanged" Margin="0, 10, 0, 0">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <Border Stroke="#333" StrokeThickness="1">
-                            <Label Text="{Binding .}" Padding="5"/>
+                        <Border Stroke="#333" StrokeThickness="1" Padding="10">
+                            <Label Text="{Binding .}" FontSize="18"/>
                         </Border>
                     </ViewCell>
                 </DataTemplate>

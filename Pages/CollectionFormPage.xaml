@@ -3,25 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CollectionManager.Pages.CollectionFormPage"
              Title="CollectionFormPage">
-    <StackLayout Orientation="Vertical" VerticalOptions="Start">
-        <Label Text="Enter name:"/>
-        <Entry Placeholder="Enter name" x:Name="collectionName" Text="{Binding Path=NameToEdit, Mode=OneWay}"/>
-        <StackLayout Orientation="Horizontal">
-            <Button Text="Add column" Command="{Binding AddColumnCommand}"/>
-            <Button Text="Edit column" Command="{Binding EditColumnCommand}"/>
-            <Button Text="Delete column" Command="{Binding DeleteColumnCommand}"/>
-        </StackLayout>
+    <StackLayout Orientation="Vertical" VerticalOptions="Start" Margin="10" Spacing="10">
+        <Label Text="Enter name:" FontSize="18"/>
+        <Entry Placeholder="Enter name" x:Name="collectionName" Text="{Binding Path=NameToEdit, Mode=OneWay}" FontSize="18"/>
+        <Label Text="Columns:" FontSize="18"/>
         <ListView ItemsSource="{Binding Columns}" ItemSelected="OnItemSelectedChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <Border Stroke="#333" StrokeThickness="1">
-                            <Label Text="{Binding .}" Padding="5"/>
+                            <Label Text="{Binding .}" Margin="5" FontSize="18"/>
                         </Border>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button Text="OK" Command="{Binding ApproveFormCommand}" CommandParameter="{Binding Source={x:Reference collectionName}, Path=Text}"/>
+        <StackLayout Orientation="Horizontal" Spacing="5">
+            <Button Text="Add column" Command="{Binding AddColumnCommand}" Background="#50BF50" TextColor="#fff"/>
+            <Button Text="Edit column" Command="{Binding EditColumnCommand}" Background="#10ABB4" TextColor="#fff"/>
+            <Button Text="Delete column" Command="{Binding DeleteColumnCommand}" Background="#ff0021" TextColor="#fff"/>
+        </StackLayout>
+        <Button Text="Save" TextColor="#fff" Command="{Binding ApproveFormCommand}" Background="#446DF6" CommandParameter="{Binding Source={x:Reference collectionName}, Path=Text}"/>
     </StackLayout>
 </ContentPage>

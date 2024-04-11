@@ -1,4 +1,4 @@
-using CollectionManager.ViewModels;
+﻿using CollectionManager.ViewModels;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 
@@ -46,16 +46,21 @@ public partial class ViewCollectionPage : ContentPage
         StackLayout stack = new StackLayout();
         stack.Orientation = StackOrientation.Horizontal;
         stack.VerticalOptions = LayoutOptions.Center;
+        stack.Padding = 10;
 
         Button editButton = new Button();
         editButton.SetBinding(Button.CommandProperty, "EditItemCommand");
         editButton.SetValue(Button.CommandParameterProperty, item);
         editButton.Text = "Edit";
+        editButton.Background = new Color(0x10, 0xAB, 0xB4);
+        editButton.TextColor = new Color(0xff, 0xff, 0xff);
 
         Button deleteButton = new Button();
         deleteButton.SetBinding(Button.CommandProperty, "RemoveItemCommand");
         deleteButton.SetValue(Button.CommandParameterProperty, item);
         deleteButton.Text = "Delete";
+        deleteButton.Background = new Color(0xff, 0, 0x21);
+        deleteButton.TextColor = new Color(0xff, 0xff, 0xff);
 
         stack.Add(editButton);
         stack.Add(deleteButton);
@@ -87,7 +92,9 @@ public partial class ViewCollectionPage : ContentPage
                 Source = ImageSource.FromFile(collection[r].ImagePath(collectionName)),
                 WidthRequest = 200,
                 HeightRequest = 200,
+                Margin = 10
             };
+            
             grid.Add(GridBorderElement(image, style), 0, r+1);
 
             for (int c = 1; c < collection[r].Values.Count; ++c)
@@ -95,7 +102,7 @@ public partial class ViewCollectionPage : ContentPage
                 Label el = CellLabel(collection[r].Values[c]);
                 grid.Add(GridBorderElement(el, style), c, r+1);
             }
-            grid.Add(GridBorderElement(ControlButtons(collection[r]), style), collection[r].Values.Count, r + 1);
+            grid.Add(GridBorderElement(ControlButtons(collection[r]), (Style)Resources["borderCell"]), collection[r].Values.Count, r + 1);
         }
 
         return grid;

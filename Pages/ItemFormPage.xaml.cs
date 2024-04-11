@@ -1,4 +1,5 @@
 using CollectionManager.ViewModels;
+using System.Collections;
 
 namespace CollectionManager.Pages;
 
@@ -15,10 +16,12 @@ public partial class ItemFormPage : ContentPage
 		List<string> initialValues = viewModel.initialValues;
 		if(initialValues != null)
 		{
-            imageSource.Text = initialValues[0];
+            imageSource.Text = App.CollectionRepo.GetImagePath(viewModel.collectionName, initialValues[0]);
             name.Text = initialValues[1];
             status.SelectedItem = initialValues[2];
-            inputs.Add(GenerateInputs(viewModel.AdditionalColumns, initialValues.GetRange(3, initialValues.Count - 3)));
+			StackLayout layout = GenerateInputs(viewModel.AdditionalColumns, initialValues.GetRange(3, initialValues.Count - 3));
+			layout.Spacing = 10;
+            inputs.Add(layout);
 		}
 		else
 		{

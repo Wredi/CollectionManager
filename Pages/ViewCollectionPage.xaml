@@ -7,6 +7,11 @@
     <ContentPage.BindingContext>
         <viewModels:ViewCollectionViewModel/>
     </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Import" Command="{Binding ImportCollectionCommand}" IconImageSource="{FontImage Glyph='⇓', Size=28}"/>
+        <ToolbarItem Text="Export" Command="{Binding ExportCollectionCommand}" IconImageSource="{FontImage Glyph='⇑', Size=28}"/>
+        <ToolbarItem Text="Summary" Command="{Binding GenerateSummaryCommand}" IconImageSource="{FontImage Glyph='🗈', Size=28}"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <Style x:Key="borderCell" TargetType="Border">
             <Setter Property="Stroke" Value="#333" />
@@ -14,7 +19,8 @@
             <Setter Property="Margin" Value="-1" />
         </Style>
         <Style x:Key="soldBorderCell" TargetType="Border" BasedOn="{StaticResource borderCell}">
-            <Setter Property="Background" Value="#999"/>
+            <!--<Setter Property="Background" Value="#999"/>-->
+            <Setter Property="Opacity" Value="0.3"/>
         </Style>
         <Style x:Key="cellLabel" TargetType="Label">
             <Setter Property="Margin" Value="10" />
@@ -26,17 +32,12 @@
         </Style>
     </ContentPage.Resources>
     <ScrollView>
-        <StackLayout Spacing="10" Margin="5">
-            <StackLayout Spacing="5">
-                <StackLayout Orientation="Horizontal">
-                    <Button Text="Add item" Command="{Binding AddItemCommand}" />
-                    <Button Text="Export collection" Command="{Binding ExportCollectionCommand}" />
-                    <Button Text="Import collection" Command="{Binding ImportCollectionCommand}" />
-                    <Button Text="Summary" Command="{Binding GenerateSummaryCommand}" />
-                </StackLayout>
-                <StackLayout HorizontalOptions="Start">
-                    <Border Stroke="#333" StrokeThickness="1" x:Name="collection"/>
-                </StackLayout>
+        <StackLayout Spacing="5" Margin="10">
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Add item" Command="{Binding AddItemCommand}" Background="#50BF50" TextColor="#fff"/>
+            </StackLayout>
+            <StackLayout HorizontalOptions="Start">
+                <Border Stroke="#333" StrokeThickness="1" x:Name="collection"/>
             </StackLayout>
         </StackLayout>
     </ScrollView>
